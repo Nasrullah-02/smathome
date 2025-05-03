@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Lampu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .button-off {
+            background-color: #f44336;
+        }
+
+        .status {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBEsQhhH75YP-WmxyY51JeLmttrKs0Sf9Q",
+            authDomain: "smarthomeapp-effb3.firebaseapp.com",
+            databaseURL: "https://smarthomeapp-effb3-default-rtdb.firebaseio.com",
+            projectId: "smarthomeapp-effb3",
+            storageBucket: "smarthomeapp-effb3.firebasestorage.app",
+            messagingSenderId: "241669885713",
+            appId: "1:241669885713:web:d34479eeff17f353d046b0",
+            measurementId: "G-YTPW0EH5QV"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Mendapatkan referensi ke node status lampu
+        const lampuRef = ref(database, 'lampu1');
+
+        // Get references to buttons and status display
+        const turnOnButton = document.getElementById("turnOnBtn");
+        const turnOffButton = document.getElementById("turnOffBtn");
+        const statusDisplay = document.getElementById("lampuStatus");
+
+        // Functions to update Firebase status
+        function updateLampuStatus(status) {
+            set(lampuRef, status);
+        }
+
+        // Event listeners for buttons
+        turnOnButton.addEventListener('click', function() {
+            updateLampuStatus(true); // Lampu menyala
+        });
+
+        turnOffButton.addEventListener('click', function() {
+            updateLampuStatus(false); // Lampu mati
+        });
+
+        // Mendengarkan perubahan status lampu di Firebase secara real-time
+        onValue(lampuRef, (snapshot) => {
+            const statusLampu = snapshot.val();
+            if (statusLampu) {
+                statusDisplay.textContent = "Lampu Menyala";
+                statusDisplay.style.color = "green"; // Menampilkan dengan warna hijau
+            } else {
+                statusDisplay.textContent = "Lampu Mati";
+                statusDisplay.style.color = "red"; // Menampilkan dengan warna merah
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>Control Lampu</h1>
+    <button class="button" id="turnOnBtn">Nyalakan Lampu</button>
+    <button class="button button-off" id="turnOffBtn">Matikan Lampu</button>
+
+    <div class="status" id="lampuStatus">Status Lampu: Tidak Diketahui</div>
+</body>
+</html>
