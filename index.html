@@ -38,61 +38,100 @@
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js";
 
         // Firebase Configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCGy1BLAWf62GnUNUKQZ-zYf3S2ykX5g3Y",
-  authDomain: "rumahpintar-c3802.firebaseapp.com",
-  databaseURL: "https://rumahpintar-c3802-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "rumahpintar-c3802",
-  storageBucket: "rumahpintar-c3802.firebasestorage.app",
-  messagingSenderId: "375576792398",
-  appId: "1:375576792398:web:4bc6b78dfd782f339fa21f",
-  measurementId: "G-JPC0F55V2V"
-};
+        const firebaseConfig = {
+          apiKey: "AIzaSyCGy1BLAWf62GnUNUKQZ-zYf3S2ykX5g3Y",
+          authDomain: "rumahpintar-c3802.firebaseapp.com",
+          databaseURL: "https://rumahpintar-c3802-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "rumahpintar-c3802",
+          storageBucket: "rumahpintar-c3802.firebasestorage.app",
+          messagingSenderId: "375576792398",
+          appId: "1:375576792398:web:4bc6b78dfd782f339fa21f",
+          measurementId: "G-JPC0F55V2V"
+        };
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
         // Mendapatkan referensi ke node status lampu
-        const lampuRef = ref(database, 'lampu1');
+        const lampu1Ref = ref(database, 'lampu1');
+        const lampu2Ref = ref(database, 'lampu2');
 
-        // Get references to buttons and status display
-        const turnOnButton = document.getElementById("turnOnBtn");
-        const turnOffButton = document.getElementById("turnOffBtn");
-        const statusDisplay = document.getElementById("lampuStatus");
+        // Get references to buttons and status displays
+        const turnOnButton1 = document.getElementById("turnOnBtn1");
+        const turnOffButton1 = document.getElementById("turnOffBtn1");
+        const statusDisplay1 = document.getElementById("lampuStatus1");
+
+        const turnOnButton2 = document.getElementById("turnOnBtn2");
+        const turnOffButton2 = document.getElementById("turnOffBtn2");
+        const statusDisplay2 = document.getElementById("lampuStatus2");
 
         // Functions to update Firebase status
-        function updateLampuStatus(status) {
-            set(lampuRef, status);
+        function updateLampuStatus(ref, status) {
+            set(ref, status);
         }
 
-        // Event listeners for buttons
-        turnOnButton.addEventListener('click', function() {
-            updateLampuStatus(true); // Lampu menyala
+        // Event listeners for lampu 1
+        turnOnButton1.addEventListener('click', function() {
+            updateLampuStatus(lampu1Ref, true); // Lampu 1 menyala
         });
 
-        turnOffButton.addEventListener('click', function() {
-            updateLampuStatus(false); // Lampu mati
+        turnOffButton1.addEventListener('click', function() {
+            updateLampuStatus(lampu1Ref, false); // Lampu 1 mati
         });
 
-        // Mendengarkan perubahan status lampu di Firebase secara real-time
-        onValue(lampuRef, (snapshot) => {
-            const statusLampu = snapshot.val();
-            if (statusLampu) {
-                statusDisplay.textContent = "Lampu Menyala";
-                statusDisplay.style.color = "green"; // Menampilkan dengan warna hijau
+        // Event listeners for lampu 2
+        turnOnButton2.addEventListener('click', function() {
+            updateLampuStatus(lampu2Ref, true); // Lampu 2 menyala
+        });
+
+        turnOffButton2.addEventListener('click', function() {
+            updateLampuStatus(lampu2Ref, false); // Lampu 2 mati
+        });
+
+        // Mendengarkan perubahan status lampu1 di Firebase secara real-time
+        onValue(lampu1Ref, (snapshot) => {
+            const statusLampu1 = snapshot.val();
+            if (statusLampu1) {
+                statusDisplay1.textContent = "Lampu 1: Menyala";
+                statusDisplay1.style.color = "green"; // Menampilkan dengan warna hijau
             } else {
-                statusDisplay.textContent = "Lampu Mati";
-                statusDisplay.style.color = "red"; // Menampilkan dengan warna merah
+                statusDisplay1.textContent = "Lampu 1: Mati";
+                statusDisplay1.style.color = "red"; // Menampilkan dengan warna merah
+            }
+        });
+
+        // Mendengarkan perubahan status lampu2 di Firebase secara real-time
+        onValue(lampu2Ref, (snapshot) => {
+            const statusLampu2 = snapshot.val();
+            if (statusLampu2) {
+                statusDisplay2.textContent = "Lampu 2: Menyala";
+                statusDisplay2.style.color = "green"; // Menampilkan dengan warna hijau
+            } else {
+                statusDisplay2.textContent = "Lampu 2: Mati";
+                statusDisplay2.style.color = "red"; // Menampilkan dengan warna merah
             }
         });
     </script>
 </head>
 <body>
     <h1>Control Lampu</h1>
-    <button class="button" id="turnOnBtn">Nyalakan Lampu</button>
-    <button class="button button-off" id="turnOffBtn">Matikan Lampu</button>
+    
+    <!-- Lampu 1 Controls -->
+    <div>
+        <h3>Lampu 1</h3>
+        <button class="button" id="turnOnBtn1">Nyalakan Lampu 1</button>
+        <button class="button button-off" id="turnOffBtn1">Matikan Lampu 1</button>
+        <div class="status" id="lampuStatus1">Status Lampu 1: Tidak Diketahui</div>
+    </div>
+    
+    <!-- Lampu 2 Controls -->
+    <div>
+        <h3>Lampu 2</h3>
+        <button class="button" id="turnOnBtn2">Nyalakan Lampu 2</button>
+        <button class="button button-off" id="turnOffBtn2">Matikan Lampu 2</button>
+        <div class="status" id="lampuStatus2">Status Lampu 2: Tidak Diketahui</div>
+    </div>
 
-    <div class="status" id="lampuStatus">Status Lampu: Tidak Diketahui</div>
 </body>
 </html>
